@@ -5,57 +5,67 @@
 //  Created by P on 2024/2/3.
 //
 
+import Combine
 import SwiftUI
-import SwiftData
+//import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    let options = ["Off", "Sort by Price", "Sort by Artist"]
+    @State private var sortBy = 0
+    @State private var searchText: String = ""
+    @ObservedObject var viewModel = ViewModel()
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        NavigationStack {
+            SearchBar(text: $searchText).padding([.horizontal, .top], 16).onChange(of: searchText) { _, newValue in
+                viewModel.filterString = newValue
+                viewModel.reloadData()
+            }
+            VStack {
+                HStack {
+                    Text("Sort option").font(.headline).padding(.leading)
+                    Spacer()
+                }
+                Picker(selection: $sortBy, label: Text("排序")) {
+                    Text(options[0]).tag(0)
+                    Text(options[1]).tag(1)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding([.horizontal, .top], 16)
+                .onChange(of: sortBy) {
+                    viewModel.sortOption = sortBy
+                    viewModel.reloadData()
+                }
+                Spacer()
+                if viewModel.isLoading {
+                    ProgressView("Loading").transition(.opacity)
+                } else {
+                    if let errorMessage = viewModel.errorMessage {
+                        Text("Error: \(errorMessage)")
+                    } else {
+                        List(viewModel.mediaData, id: \.trackId) { model in
+//                            Text(app.collectionName)
+                            MediaCell(model: model)
+                                .listRowSeparator(.visible)
+                                .listRowInsets(.none)
+                        }
+                        .opacity(1)
                     }
                 }
-                .onDelete(perform: deleteItems)
+                Spacer()
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+            .onAppear {
+                withAnimation{
+                    viewModel.fetchData()
                 }
             }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+            .navigationTitle("iTunes Music")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
-}
+//#Preview {
+//    ContentView()
+//        .modelContainer(for: Item.self, inMemory: true)
+//}
