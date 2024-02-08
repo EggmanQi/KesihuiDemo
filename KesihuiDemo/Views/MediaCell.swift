@@ -38,10 +38,10 @@ struct MediaCell:View {
                 Text(model.artistName)
                     .lineLimit(1)
                     .font(.subheadline)
-                    .padding(.trailing, 40)
                 Spacer()
             }
             .padding(.leading, 60)
+            .padding(.trailing, 10)
         }
         .frame(maxWidth: .infinity, maxHeight: 80)
 //        Divider().overlay(.gray)

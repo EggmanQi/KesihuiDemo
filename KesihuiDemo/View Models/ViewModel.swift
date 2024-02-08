@@ -33,8 +33,12 @@ class ViewModel: ObservableObject {
                         self.errorMessage = error.localizedDescription
                 }
             }, receiveValue: { data in
-                self.originalMediaData = data
-                self.mediaData = self.sortData()
+                if data.isEmpty {
+                    self.errorMessage = "No media data now, please retry later"
+                } else {
+                    self.originalMediaData = data
+                    self.mediaData = self.sortData()
+                }
             })
             .store(in: &cancellable)
     }
@@ -66,6 +70,5 @@ class ViewModel: ObservableObject {
             ($0.trackName.localizedCaseInsensitiveContains(input) || $0.artistName.localizedCaseInsensitiveContains(input))
         }
         return filteredData
-//        mediaData = sortData(datas: filteredData)
     }
 }

@@ -9,8 +9,8 @@ import Combine
 import Foundation
 
 class APIService {
-    func fetchAppStoreData() -> AnyPublisher<[MediaModel], Error> {
-        let apiUrl = "https://itunes.apple.com/search?term=歌&limit=200&country=HK"
+    func fetchAppStoreData(term: String = "歌", limit: Int = 200, country: String = "HK") -> AnyPublisher<[MediaModel], Error> {
+        let apiUrl = "https://itunes.apple.com/search?term=\(term)&limit=\(limit)&country=\(country)"
         guard let url = URL(string: apiUrl) else {
             return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
         }

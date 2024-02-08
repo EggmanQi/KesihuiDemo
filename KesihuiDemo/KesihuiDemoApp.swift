@@ -38,7 +38,7 @@ struct SplashView: View {
                     .font(.headline)
                     .padding()
                 NavigationLink(destination: SwiftPageWrapper()) {
-                    Text("Brain Teasers")
+                    Text("Section I - Brain Teasers")
                         .foregroundColor(.white)
                         .padding()
                         .background(Color.blue)
@@ -47,7 +47,7 @@ struct SplashView: View {
                 .padding()
 
                 NavigationLink(destination: ContentView()) {
-                    Text("Write an application")
+                    Text("Section II - Write an application")
                         .foregroundColor(.white)
                         .padding()
                         .background(Color.blue)

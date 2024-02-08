@@ -26,9 +26,6 @@ struct SearchBar: View {
                     Text("Cancel")
                         .foregroundColor(.gray)
                         .padding(8)
-//                    Image(systemName: "xmark.circle.fill")
-//                        .foregroundColor(.gray)
-//                        .padding(8)
                 }
                 .opacity(text.isEmpty ? 0 : 1)
                 .disabled(text.isEmpty)
@@ -36,6 +33,7 @@ struct SearchBar: View {
         }
     }
 }
-#Preview {
-    SearchBar(text: .constant("test"))
-}
+
+//#Preview {
+//    SearchBar(text: .constant("test"))
+//}
