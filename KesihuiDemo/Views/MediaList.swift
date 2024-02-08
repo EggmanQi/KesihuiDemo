@@ -6,14 +6,37 @@
 //
 
 import SwiftUI
-//
-//struct MediaList: View {
-//    
-//    @ObservedObject var viewModel = ViewModel()
-//    @State private var isDataLoaded: Bool = false
-//    @State private var selectedSegment: Int = 0
-//
-//    var body: some View {
-//        
+
+struct MediaList: View {
+    
+    @ObservedObject var viewModel = ViewModel()
+    @State private var isDetailSheetPresented = false
+    @State private var detailViewModel: MediaModel?
+
+    var body: some View {
+        ScrollViewReader{ scrollView in
+            List(viewModel.mediaData, id: \.trackId) { model in
+                MediaCell(model: model)
+                    .listRowSeparator(.visible, edges: .bottom)
+                    .onTapGesture {
+                        detailViewModel = model
+                        isDetailSheetPresented.toggle()
+                    }
+            }
+            .listStyle(.plain)
+            .sheet(isPresented: $isDetailSheetPresented, content: {
+                if let detailViewModel {
+                    MediaDetailView(model: detailViewModel)
+                }
+            })
+            .onChange(of: viewModel.mediaData) {
+                scrollView.scrollTo(0)
+            }
+            .scrollDismissesKeyboard(.automatic)
+        }
+    }
+
+//    private func hideKeyboard() {
+//        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 //    }
-//}
+}

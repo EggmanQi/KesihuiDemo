@@ -7,19 +7,19 @@
 
 import Combine
 import SwiftUI
-//import SwiftData
 
 struct ContentView: View {
-    let options = ["Off", "Sort by Price", "Sort by Artist"]
+    let options = ["Off", "Sort by Price"]
+
     @State private var sortBy = 0
     @State private var searchText: String = ""
+
     @ObservedObject var viewModel = ViewModel()
 
     var body: some View {
         NavigationStack {
             SearchBar(text: $searchText).padding([.horizontal, .top], 16).onChange(of: searchText) { _, newValue in
-                viewModel.filterString = newValue
-                viewModel.reloadData()
+                reloadWithSearchInput(input: newValue)
             }
             VStack {
                 HStack {
@@ -33,8 +33,7 @@ struct ContentView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding([.horizontal, .top], 16)
                 .onChange(of: sortBy) {
-                    viewModel.sortOption = sortBy
-                    viewModel.reloadData()
+                    reloadWhenSortOptionChanged(option: sortBy)
                 }
                 Spacer()
                 if viewModel.isLoading {
@@ -43,13 +42,7 @@ struct ContentView: View {
                     if let errorMessage = viewModel.errorMessage {
                         Text("Error: \(errorMessage)")
                     } else {
-                        List(viewModel.mediaData, id: \.trackId) { model in
-//                            Text(app.collectionName)
-                            MediaCell(model: model)
-                                .listRowSeparator(.visible)
-                                .listRowInsets(.none)
-                        }
-                        .opacity(1)
+                       MediaList(viewModel: viewModel)
                     }
                 }
                 Spacer()
@@ -61,11 +54,28 @@ struct ContentView: View {
             }
             .navigationTitle("iTunes Music")
             .navigationBarTitleDisplayMode(.inline)
+            .ignoresSafeArea()
         }
+        .onTapGesture {
+            hideKeyboard()
+        }
+    }
+
+    private func reloadWithSearchInput(input : String) {
+        viewModel.filterString = input
+        viewModel.reloadData()
+    }
+
+    private func reloadWhenSortOptionChanged(option: Int) {
+        viewModel.sortOption = option
+        viewModel.reloadData()
+    }
+
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
-//#Preview {
-//    ContentView()
-//        .modelContainer(for: Item.self, inMemory: true)
-//}
+#Preview {
+    ContentView()
+}

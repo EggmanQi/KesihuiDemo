@@ -12,7 +12,7 @@ struct AppModel: Codable {
     let results: [MediaModel]
 }
 
-struct MediaModel: Codable {
+struct MediaModel: Codable, Equatable {
     let artistName: String
     let artworkUrl100: String
     let artworkUrl30: String

@@ -10,43 +10,40 @@ import SwiftUI
 struct MediaCell:View {
     var model: MediaModel
     var body: some View {
-        HStack {
-            // 左边的图像
-            AsyncImage(url: URL(string: model.artworkUrl100)) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 50, height: 50)
-                    .cornerRadius(10)
-            } placeholder: {
-                Image(systemName: "photo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 50, height: 50)
-                    .cornerRadius(10)
+        ZStack(alignment: Alignment(horizontal: .leading, vertical: .center)) {
+            HStack {
+                AsyncImage(url: URL(string: model.artworkUrl100)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 50, height: 50)
+                        .cornerRadius(10)
+                } placeholder: {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .cornerRadius(10)
+                }
+                Spacer()
+                VStack {
+                    Spacer()
+                    Text(String(format: "$%.2f", model.trackPrice))
+                        .font(.subheadline)
+                }
             }
-
-            // 中间的 track name 和 artist name
             VStack(alignment: .leading) {
                 Text(model.trackName)
                     .font(.headline)
                 Text(model.artistName)
+                    .lineLimit(1)
                     .font(.subheadline)
-                    .foregroundColor(.gray)
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-
-            Spacer()
-
-            // 右下角的 price
-            VStack {
+                    .padding(.trailing, 40)
                 Spacer()
-                Text(String(format: "$%.2f", model.trackPrice))
-                    .foregroundColor(.green)
-//                    .padding(.trailing)
             }
+            .padding(.leading, 60)
         }
-        .frame(maxHeight: 80)
+        .frame(maxWidth: .infinity, maxHeight: 80)
+//        Divider().overlay(.gray)
     }
 }
