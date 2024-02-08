@@ -64,7 +64,7 @@ struct ContentView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .ignoresSafeArea()
 
-//                FloatingMenuButton()
+                FloatingMenuButton()
             }
         }
         .onTapGesture {
@@ -89,6 +89,7 @@ struct ContentView: View {
 
 struct FloatingMenuButton: View {
     // TODO: allow user to filter data with date and price
+    // use viewModel.filterDataWithPrices and viewModel.filterDataWithDates to get filter data
     @State private var selectedOption: String?
     var body: some View {
         VStack {

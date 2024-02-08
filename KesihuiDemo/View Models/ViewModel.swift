@@ -71,4 +71,24 @@ class ViewModel: ObservableObject {
         }
         return filteredData
     }
+
+    private func filterDataWithPrices(prices: (Double, Double)) -> [MediaModel] {
+        let (price_1, price_2) = prices
+        return mediaData.filter { model in
+            let trackPrice = model.trackPrice
+            return trackPrice >= price_1 && trackPrice <= price_2
+        }
+    }
+
+    private func filterDataWithDates(dates: (Date, Date)) -> [MediaModel] {
+        let (date_1, date_2) = dates
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        return mediaData.filter { model in
+            if let releaseDate = dateFormatter.date(from: model.releaseDate){
+                return releaseDate >= date_1 && releaseDate <= date_2
+            }
+            return false
+        }
+    }
 }
